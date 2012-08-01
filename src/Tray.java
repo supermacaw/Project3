@@ -47,18 +47,28 @@ public class Tray {
 		}
 	}
 	
-	public int hashCode(){
-		
+	private boolean isOK() {
+		HashMap<Block, Integer> counts = new HashMap<Block, Integer>();
+		for (int m = 0; m < this.lengthOfTray; m++) {
+			for (int n = 0; n < this.widthOfTray; n++) {
+				Block curBlock = this.config[m][n];
+				if(curBlock!=null){
+					if(counts.containsKey(curBlock)){
+						counts.put(curBlock, counts.get(curBlock)+1);
+					}else{
+						counts.put(curBlock, 1);
+					}
+				}
+			}
+		}
+		for(Block b : blocksOnTray){
+			int numSpaces = b.length * b.width;
+			if(numSpaces != counts.get(b).intValue()){
+				return false;
+			}
+		}
+		return true;
 	}
+	
 
-
-/* This proves that boolean[][] is default to false
-    public static void main(String[] args) {
-        Tray test = new Tray(5, 5);
-        for (boolean[] b : test.isUsed) {
-            for (boolean bb : b) {
-                System.out.println(bb);
-            }
-        }
-    }*/
 }

@@ -13,4 +13,14 @@ public class Block {
 		this.length = length;
         this.width = width;
     }
+    
+    public int hashCode() {
+    	int dim = length + width * 10;
+    	int coord = upLCrow + upLCcol*10;
+    	return dim ^ coord;
+    }
+    
+    public boolean equals (Block other) {
+    	return (length == other.length && width == other.width && upLCrow == other.upLCrow && upLCcol == other.upLCcol);
+    }
 }
