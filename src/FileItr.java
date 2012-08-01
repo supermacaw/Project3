@@ -5,8 +5,9 @@ import java.util.Scanner;
 import java.io.File;
 
 class FileItr implements Iterator{
-    Scanner itr;
-    boolean flag;
+    private Scanner itr;
+    private int lineNum;
+    private boolean flag;
 
     public FileItr (String fileName) {
         File toRead = new File(fileName);
@@ -15,6 +16,7 @@ class FileItr implements Iterator{
         } catch (Exception e) {
             e.printStackTrace();
         }
+        lineNum = 0;
         flag = true;
         itr.useDelimiter("\\s*\n\\s*");
     }
@@ -25,14 +27,19 @@ class FileItr implements Iterator{
 
     public String next() {
         String toRtn = itr.next();
+        lineNum ++;
         if (!itr.hasNext()) {
             itr.close();
             flag = false;
         }
-        return toRtn;
+        return toRtn.trim();
     }
     
     public void remove() {
         throw new UnsupportedOperationException("remove not supported");
+    }
+
+    public int lineNumber() {
+        return lineNum;
     }
 }
