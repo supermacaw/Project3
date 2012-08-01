@@ -7,7 +7,10 @@ public class Tray {
 	protected int lengthOfTray;
 	protected int widthOfTray;
     protected Block [][] config;
-    protected ArrayList<Block> blocksOnTray = new ArrayList<Block>(); //arraylist of blocks for ease of access when generating hash code
+    protected Block [][] goalConfig;
+    //protected ArrayList<Block> blocksOnTray = new ArrayList<Block>(); //arraylist of blocks for ease of access when generating hash code
+    protected HashSet<Block> blocksOnTray = new HashSet<Block>();
+	protected ArrayList<Block> goalBlocks;
 	
 	public Tray(int rows, int cols) {
 		this.lengthOfTray = rows;
@@ -15,7 +18,7 @@ public class Tray {
         this.config = new Block[rows][cols];
 	}
 	
-	public void put (Block blockToAdd, int row, int col) {
+	public void place (Block blockToAdd, int row, int col) {
 		blockToAdd.upLCrow = row;
 		blockToAdd.upLCcol = col;
 		blocksOnTray.add(blockToAdd);
@@ -46,6 +49,19 @@ public class Tray {
 			}
 		}
 	}
+	public void putGoalConfig(Block blockToAdd, int row, int col){
+		goalBlocks.add(blockToAdd);
+		//this should check if the board is at goal config
+	}
+	
+	public boolean isAtGoal(){
+		for(int i = 0; i<goalBlocks.size(); i++){
+			if(!blocksOnTray.contains(goalBlocks.get(i))){
+				return false;
+			}
+		}
+		return true;
+	}
 	
 	private boolean isOK() {
 		HashMap<Block, Integer> counts = new HashMap<Block, Integer>();
@@ -68,6 +84,10 @@ public class Tray {
 			}
 		}
 		return true;
+	}
+	
+	public int hashCode(){
+		return blocksOnTray.hashCode();
 	}
 	
 

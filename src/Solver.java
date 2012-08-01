@@ -16,6 +16,8 @@ public class Solver {
     public Tray getTray() {
         return tray;
     }
+    
+   
 
     public static void main(String[] args) {
         Solver s = null;
