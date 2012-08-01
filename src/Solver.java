@@ -20,7 +20,6 @@ public class Solver {
     }
 
     private static void check(String[] args) {
-        int count = 0;
         if (args.length < 2) {
             throw new IllegalArgumentException("Not enough arguments");
         }
