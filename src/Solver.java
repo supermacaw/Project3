@@ -18,7 +18,7 @@ public class Solver {
     }
 
     public static void main(String[] args) {
-        Solver s;
+        Solver s = null;
         check(args);
         FileItr configRdr = new FileItr(args[args.length - 2]);
         FileItr goalRdr = new FileItr(args[args.length - 1]);
