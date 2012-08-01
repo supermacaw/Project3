@@ -8,7 +8,7 @@ public class Tray {
 	protected int widthOfTray;
     protected Block [][] config;
     protected Block [][] goalConfig;
-    //protected ArrayList<Block> blocksOnTray = new ArrayList<Block>(); //arraylist of blocks for ease of access when generating hash code
+    //protected ArrayList<Block> blocksOnTray = new ArrayList<Block>();
     protected HashSet<Block> blocksOnTray = new HashSet<Block>();
 	protected ArrayList<Block> goalBlocks;
 	
@@ -33,6 +33,7 @@ public class Tray {
 	}
 	
 	public void move (Block blockToMove, int row, int col) {
+		blocksOnTray.remove(blockToMove);
 		for (int m = blockToMove.upLCrow; m < blockToMove.upLCrow+blockToMove.length; m++){
 			for(int n = blockToMove.upLCcol; n < blockToMove.upLCcol+blockToMove.width; n++){
 				this.config[m][n] = null;
@@ -48,15 +49,16 @@ public class Tray {
 				this.config[i][j] = blockToMove;
 			}
 		}
+		blocksOnTray.add(blockToMove);
 	}
-	public void putGoalConfig(Block blockToAdd, int row, int col){
+	public void putGoalConfig(Block blockToAdd){
 		goalBlocks.add(blockToAdd);
-		//this should check if the board is at goal config
 	}
 	
+	//check last moved block?... i feel like there's a better way of doing this
 	public boolean isAtGoal(){
 		for(int i = 0; i<goalBlocks.size(); i++){
-			if(!blocksOnTray.contains(goalBlocks.get(i))){
+			if(!blocksOnTray.contains(goalBlocks.get(i))){//may have to check this contains method.. not sure if == or equals
 				return false;
 			}
 		}
@@ -77,18 +79,42 @@ public class Tray {
 				}
 			}
 		}
-		for(Block b : blocksOnTray){
+		Iterator<Block> i = blocksOnTray.iterator();
+		while(i.hasNext()){
+			Block b = i.next();
+			int numSpace = b.length * b.width;
+			if(numSpace != counts.get(b).intValue()) {
+				return false;
+			}
+		}
+		/*for(Block b : blocksOnTray){
 			int numSpaces = b.length * b.width;
 			if(numSpaces != counts.get(b).intValue()){
 				return false;
 			}
-		}
+		}*/
 		return true;
 	}
 	
 	public int hashCode(){
-		return blocksOnTray.hashCode();
+		int hashCode = 1;
+		Iterator<Block> i = blocksOnTray.iterator();
+		while (i.hasNext()) {
+		      Block x = i.next();
+		      hashCode = 31*hashCode + (x==null ? 0 : x.hashCode());
+		}
+		return hashCode;
 	}
 	
-
+	public boolean equals(Tray otherTray){
+		//compare length/width of tray? not needed apparently
+		for(int i = 0; i < this.lengthOfTray; i++){
+			for(int j = 0; j < this.widthOfTray; j++){
+				if(!otherTray.config[i][j].equals(this.config[i][j])){ //.equals or ==?
+					return false;
+				}
+			}
+		}
+		return true;
+	}	
 }

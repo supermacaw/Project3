@@ -30,7 +30,7 @@ public class Solver {
                 s = new Solver(param[0], param[1]);
             } else {
                 Block newBlock = new Block(param[0], param[1]);
-                s.getTray().put(newBlock, param[2], param[3]);
+                s.getTray().place(newBlock, param[2], param[3]);
             }
         }
         if (goalRdr.hasNext()) {
