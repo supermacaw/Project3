@@ -1,5 +1,7 @@
 package src;
 
+import java.util.Iterator;
+
 public class Solver {
     Tray tray;
 
@@ -9,9 +11,13 @@ public class Solver {
 
     public static void main(String[] args) {
         check(args);
-    }
+        Iterator configRdr = new FileItr(args[args.length - 2]);
+        Iterator goalRdr = new FileItr(args[args.length - 1]);
+        while (configRdr.hasNext()) {
+            System.out.println(configRdr.next());
+        }
 
-        
+    }
 
     private static void check(String[] args) {
         int count = 0;
