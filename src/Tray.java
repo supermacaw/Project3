@@ -283,7 +283,7 @@ public class Tray {
 		return true;
 	}
 	
-	public boolean equals(Object other){
+	public boolean equals(Object other){ //can consolidate this
 		other = (Tray) other;
 		return this.equals(other);
 	}

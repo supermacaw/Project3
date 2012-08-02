@@ -42,7 +42,7 @@ public class Solver {
 		}
 	}
 
-	public  ArrayList<Block> emptyCoordsAdjBlocks(Tray myTray){
+	public ArrayList<Block> emptyCoordsAdjBlocks(Tray myTray){
 		ArrayList<Block> result = new ArrayList<Block>();
 		for(int row = 0; row < myTray.lengthOfTray; row++){
 			for(int col = 0; col < myTray.widthOfTray; col++){
@@ -58,7 +58,7 @@ public class Solver {
 	public void solve(){ //should this go in tray?
 		this.solveHelper(tray, new ArrayList<String>());   
 	}
-	private void solveHelper(Tray myTray, ArrayList<String> moves){
+	private void solveHelper(Tray myTray, ArrayList<String> moves){ //redundancy in moving in one direction, multiple empty spaces
 		if(myTray.isAtGoal(goalBlocks)){
 			for(int i = 0; i < moves.size(); i++){
 				System.out.println(moves.get(i));
