@@ -1,5 +1,6 @@
 package src;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 public class Solver {
@@ -7,7 +8,7 @@ public class Solver {
     private Block goalBlock;
     private int goalRow;
     private int goalCol;
-
+    ArrayList<Block> goalBlocks; // need to add some stuff for this in solver
 
     public Solver (int tRow, int tColumn) {
         tray = new Tray(tRow, tColumn);
@@ -15,6 +16,10 @@ public class Solver {
 
     public Tray getTray() {
         return tray;
+    }
+    
+    public void solve(){
+    	
     }
 
     public static void main(String[] args) {

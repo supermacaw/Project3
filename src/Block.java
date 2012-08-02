@@ -1,10 +1,10 @@
 package src;
 
 public class Block {
-	protected int length;
-	protected int width;
-	protected int upLCrow;
-	protected int upLCcol;
+	 int length;
+	 int width;
+	 int upLCrow;
+	 int upLCcol;
 	
     public Block (int length, int width) {
 		if (length < 0 || width < 0) {
