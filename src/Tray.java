@@ -23,7 +23,7 @@ public class Tray {
 		blockToAdd.upLCcol = col;
 		blocksOnTray.add(blockToAdd);
 		for (int i = row; i < row + blockToAdd.length; i++){
-			for(int j = col; i < col + blockToAdd.width; j++){
+			for(int j = col; j < col + blockToAdd.width; j++){
 				if(this.config[i][j] != null){
 					throw new IllegalArgumentException("Conflict in tray initialization, already occupied position at (r,c) = (" + row + "," + col + ")");
 				}
