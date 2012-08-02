@@ -17,6 +17,10 @@ public class Tray {
         this.config = new Block[rows][cols];
 	}
 	
+	public Tray(Tray otherTray){
+		
+	}
+	
 	public void place (Block blockToAdd, int row, int col) {
 		blockToAdd.upLCrow = row;
 		blockToAdd.upLCcol = col;

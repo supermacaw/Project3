@@ -50,7 +50,7 @@ public class Solver {
     }
     
     public void solve(){ //should this go in tray?
-    	HashMap<Point, ArrayList<Block>> adjToEmpty = new HashMap<Point, ArrayList<Block>>();
+    	HashMap<Point, ArrayList<Block>> adjToEmpty = this.emptyCoordsAdjBlocks();
     	for (Map.Entry<Point, ArrayList<Block>> entry : adjToEmpty.entrySet()) {
     		Point key = entry.getKey();
     		ArrayList<Block> adjBlocks = entry.getValue();
@@ -59,11 +59,11 @@ public class Solver {
     			case 1: 
     				(new Tray(tray)).move(value, value.upLCrow - 1, value.upLCcol);
     			case 2:
-    				copyTray.move(value, value.upLCrow + 1, value.upLCcol);
+    				(new Tray(tray)).move(value, value.upLCrow + 1, value.upLCcol);
     			case 3:
-    				copyTray.move(value, value.upLCrow, value.upLCcol + 1);
+    				(new Tray(tray)).move(value, value.upLCrow, value.upLCcol + 1);
     			case 4:
-    				copyTray.move(value, value.upLCrow, value.upLCcol - 1);
+    				(new Tray(tray)).move(value, value.upLCrow, value.upLCcol - 1);
     			}
     		}
     	}
