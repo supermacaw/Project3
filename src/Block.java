@@ -1,10 +1,11 @@
 package src;
 
 public class Block {
-	protected int length;
-	protected int width;
-	protected int upLCrow;
-	protected int upLCcol;
+	int length;
+	int width;
+	int upLCrow;
+	int upLCcol;
+    boolean movable;
 	
     public Block (int length, int width) {
 		if (length < 0 || width < 0) {
@@ -22,5 +23,13 @@ public class Block {
     
     public boolean equals (Block other) {
     	return (length == other.length && width == other.width && upLCrow == other.upLCrow && upLCcol == other.upLCcol);
+    }
+
+    public void setMovable() {
+        movable = true;
+    }
+
+    public void setUnmovable() {
+        movable = false;
     }
 }

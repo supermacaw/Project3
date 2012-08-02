@@ -1,6 +1,7 @@
 package src;
 
 import java.util.Iterator;
+import java.util.HashSet;
 
 public class Solver {
     private Tray tray;
@@ -16,8 +17,6 @@ public class Solver {
     public Tray getTray() {
         return tray;
     }
-    
-   
 
     public static void main(String[] args) {
         Solver s = null;
@@ -38,6 +37,10 @@ public class Solver {
             s.goalBlock = new Block(param[0], param[1]);
             s.goalRow = param[2];
             s.goalCol = param[3];
+        }
+        HashSet<Block> blocks = s.getTray().getBlocks();
+        for (Block b : blocks) {
+            System.out.println(b.hashCode());
         }
     }
 

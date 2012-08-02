@@ -4,13 +4,13 @@ import java.util.*;
 
 public class Tray {
 	
-	protected int lengthOfTray;
-	protected int widthOfTray;
-    protected Block [][] config;
-    protected Block [][] goalConfig;
+	int lengthOfTray;
+	int widthOfTray;
+    Block [][] config;
+    Block [][] goalConfig;
     //protected ArrayList<Block> blocksOnTray = new ArrayList<Block>();
-    protected HashSet<Block> blocksOnTray = new HashSet<Block>();
-	protected ArrayList<Block> goalBlocks;
+    HashSet<Block> blocksOnTray = new HashSet<Block>();
+	ArrayList<Block> goalBlocks;
 	
 	public Tray(int rows, int cols) {
 		this.lengthOfTray = rows;
@@ -22,8 +22,8 @@ public class Tray {
 		blockToAdd.upLCrow = row;
 		blockToAdd.upLCcol = col;
 		blocksOnTray.add(blockToAdd);
-		for (int i = row; i < row+blockToAdd.length; i++){
-			for(int j = col; i < col+blockToAdd.width; j++){
+		for (int i = row; i < row + blockToAdd.length; i++){
+			for(int j = col; i < col + blockToAdd.width; j++){
 				if(this.config[i][j] != null){
 					throw new IllegalArgumentException("Conflict in tray initialization, already occupied position at (r,c) = (" + row + "," + col + ")");
 				}
@@ -31,6 +31,16 @@ public class Tray {
 			}
 		}
 	}
+
+    public void remove (Block toRemove) {
+        int row = toRemove.upLCrow;
+        int col = toRemove.upLCcol;
+        for (int i = row ; i < row + toRemove.length ; i++) {
+            for (int j = col ; j < col + toRemove.width ; j++) {
+                config[i][j] = null;
+            }
+        }
+    }
 	
 	public void move (Block blockToMove, int row, int col) {
 		blocksOnTray.remove(blockToMove);
@@ -51,12 +61,66 @@ public class Tray {
 		}
 		blocksOnTray.add(blockToMove);
 	}
-	public void putGoalConfig(Block blockToAdd){
+
+
+    /**
+     * Convenience method to check if a block is movable.
+     */
+    private boolean checkMovable (Block toCheck) {
+        int row = toCheck.upLCrow;
+        int col = toCheck.upLCcol;
+        int length = toCheck.length;
+        int width = toCheck.width;
+        boolean up, down, left, right;
+        up = down = left = right = false;
+        if (inBounds(row - 1, col)) {
+            boolean upT = true;
+            for (int c = col ; c < col + width ; c++) {
+                upT = upT && (config[row - 1][c] == null);
+            }
+            up = upT;
+        }
+        if (inBounds(row + length, col)) {
+            boolean downT = true;
+            for (int c = col ; c < col + width ; c++) {
+                downT = downT && (config[row + length][c] == null);
+            }
+            down = downT;
+        }
+        if (inBounds(row, col - 1)) {
+            boolean leftT = true;
+            for (int r = row ; r < row + length ; r++) {
+                leftT = leftT && (config[r][col - 1] == null);
+            }
+            left = leftT;
+        }
+        if (inBounds(row, col + width)) {
+            boolean rightT = true;
+            for (int r = row ; r < row + length ; r++) {
+                rightT = rightT && (config[r][col + width] == null);
+            }
+            right = rightT;
+        }
+        return up || down || left || right;
+    }
+
+
+    /**
+     * Convenience method to check if a coor is
+     * in tray's bounds.
+     */
+    private boolean inBounds (int row, int col) {
+        return row > 0 && col > 0 
+                && row < lengthOfTray - 1
+                && col < widthOfTray - 1;
+    }
+    
+	public void putGoalConfig (Block blockToAdd){
 		goalBlocks.add(blockToAdd);
 	}
 	
-	//check last moved block?... i feel like there's a better way of doing this
-	public boolean isAtGoal(){
+
+	public boolean isAtGoal (){
 		for(int i = 0; i<goalBlocks.size(); i++){
 			if(!blocksOnTray.contains(goalBlocks.get(i))){//may have to check this contains method.. not sure if == or equals
 				return false;
@@ -64,8 +128,15 @@ public class Tray {
 		}
 		return true;
 	}
+
+
+    /* This is just a temporary hack for main() */
+    public HashSet<Block> getBlocks() {
+        return blocksOnTray;
+    }
 	
-	private boolean isOK() {
+
+	boolean isOK() {
 		HashMap<Block, Integer> counts = new HashMap<Block, Integer>();
 		for (int m = 0; m < this.lengthOfTray; m++) {
 			for (int n = 0; n < this.widthOfTray; n++) {
