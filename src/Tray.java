@@ -32,6 +32,16 @@ public class Tray {
 		}
 	}
 	
+	/**
+	 * Moves a given block from its given position on the board to a new position if possible.
+	 * 
+	 * @param blockToMove
+	 * 			the block that will be moved
+	 * @param row
+	 * 			the end row the upper left corner of the block would be moved to
+	 * @param col
+	 * 			the end col the upper left corner of the block would be moved to
+	 */
 	public void move (Block blockToMove, int row, int col) {
 		blocksOnTray.remove(blockToMove);
 		for (int m = blockToMove.upLCrow; m < blockToMove.upLCrow+blockToMove.length; m++){
