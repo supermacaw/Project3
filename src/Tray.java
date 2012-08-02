@@ -7,7 +7,6 @@ public class Tray {
 	 int lengthOfTray;
 	 int widthOfTray;
      Block [][] config;
-     Block [][] goalConfig;
     // ArrayList<Block> blocksOnTray = new ArrayList<Block>();
      HashSet<Block> blocksOnTray = new HashSet<Block>();
 	 
@@ -140,6 +139,7 @@ public class Tray {
 	
 	public boolean equals(Tray otherTray){
 		//compare length/width of tray? not needed apparently
+		//do we need an equals(obj)? used to override object's and is used in hashsets
 		for(int i = 0; i < this.lengthOfTray; i++){
 			for(int j = 0; j < this.widthOfTray; j++){
 				if(!otherTray.config[i][j].equals(this.config[i][j])){ //.equals or ==?

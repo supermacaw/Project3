@@ -5,6 +5,7 @@ public class Block {
 	protected int width;
 	protected int upLCrow;
 	protected int upLCcol;
+	protected int direction;
 	
     public Block (int length, int width) {
 		if (length < 0 || width < 0) {
