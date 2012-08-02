@@ -7,8 +7,8 @@ public class Tray {
 	 int lengthOfTray;
 	 int widthOfTray;
      Block [][] config;
-     Block [][] goalConfig;
-    // ArrayList<Block> blocksOnTray = new ArrayList<Block>();
+     //Block [][] goalConfig;
+     //ArrayList<Block> blocksOnTray = new ArrayList<Block>();
      HashSet<Block> blocksOnTray = new HashSet<Block>();
 	 
 	

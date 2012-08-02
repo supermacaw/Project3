@@ -5,10 +5,7 @@ import java.util.Iterator;
 
 public class Solver {
     private Tray tray;
-    private Block goalBlock;
-    private int goalRow;
-    private int goalCol;
-    ArrayList<Block> goalBlocks; // need to add some stuff for this in solver
+    private ArrayList<Block> goalBlocks; // need to add some stuff for this in solver
 
     public Solver (int tRow, int tColumn) {
         tray = new Tray(tRow, tColumn);
@@ -18,8 +15,10 @@ public class Solver {
         return tray;
     }
     
-    public void solve(){
-    	
+    public void addToGoalBlocks (Block blockToAdd, int row, int col) {
+    	blockToAdd.upLCrow = row;
+    	blockToAdd.upLCcol = col;
+    	this.goalBlocks.add(blockToAdd);
     }
 
     public static void main(String[] args) {
@@ -36,11 +35,9 @@ public class Solver {
                 s.getTray().place(newBlock, param[2], param[3]);
             }
         }
-        if (goalRdr.hasNext()) {
+        while (goalRdr.hasNext()) {
             int[] param = parseInt(goalRdr.next().split(" "));
-            s.goalBlock = new Block(param[0], param[1]);
-            s.goalRow = param[2];
-            s.goalCol = param[3];
+            s.addToGoalBlocks(new Block(param[0], param[1]), param[2], param[3]);
         }
     }
 
