@@ -74,7 +74,7 @@ public class Tray {
 		if (endRow < 0 || endRow+blockToMove.length > this.lengthOfTray || endCol < 0 || endCol+blockToMove.width > this.widthOfTray) { //move would be out of bounds
 			return false;
 		}
-		if (blockToMove.upLCrow != endRow && blockToMove.upLCcol != endCol) {
+		if (blockToMove.upLCrow != endRow && blockToMove.upLCcol != endCol) { //cannot move diagonally
 			return false;
 		}
 		int dir = 0;
