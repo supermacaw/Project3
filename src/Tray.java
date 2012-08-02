@@ -4,13 +4,13 @@ import java.util.*;
 
 public class Tray {
 	
-	protected int lengthOfTray;
-	protected int widthOfTray;
-    protected Block [][] config;
-    protected Block [][] goalConfig;
-    //protected ArrayList<Block> blocksOnTray = new ArrayList<Block>();
-    protected HashSet<Block> blocksOnTray = new HashSet<Block>();
-	protected ArrayList<Block> goalBlocks;
+	 int lengthOfTray;
+	 int widthOfTray;
+     Block [][] config;
+     Block [][] goalConfig;
+    // ArrayList<Block> blocksOnTray = new ArrayList<Block>();
+     HashSet<Block> blocksOnTray = new HashSet<Block>();
+	 
 	
 	public Tray(int rows, int cols) {
 		this.lengthOfTray = rows;
@@ -23,7 +23,7 @@ public class Tray {
 		blockToAdd.upLCcol = col;
 		blocksOnTray.add(blockToAdd);
 		for (int i = row; i < row+blockToAdd.length; i++){
-			for(int j = col; i < col+blockToAdd.width; j++){
+			for(int j = col; j < col+blockToAdd.width; j++){
 				if(this.config[i][j] != null){
 					throw new IllegalArgumentException("Conflict in tray initialization, already occupied position at (r,c) = (" + row + "," + col + ")");
 				}
@@ -32,31 +32,63 @@ public class Tray {
 		}
 	}
 	
-	public void move (Block blockToMove, int row, int col) {
+	public boolean move (Block blockToMove, int row, int col) {
 		blocksOnTray.remove(blockToMove);
 		for (int m = blockToMove.upLCrow; m < blockToMove.upLCrow+blockToMove.length; m++){
 			for(int n = blockToMove.upLCcol; n < blockToMove.upLCcol+blockToMove.width; n++){
 				this.config[m][n] = null;
 			}
 		}
-		blockToMove.upLCrow = row;
-		blockToMove.upLCcol = col;
 		for (int i = row; i < row+blockToMove.length; i++){
-			for(int j = col; i < col+blockToMove.width; j++){
+			for(int j = col; j < col+blockToMove.width; j++){
 				if(this.config[i][j] != null){
-					throw new IllegalArgumentException("Conflict in tray reconfiguration, already occupied position at (r,c) = (" + row + "," + col + ")");
+					return false;
 				}
+			}
+		}
+		for (int i = row; i < row+blockToMove.length; i++) {
+			for(int j = col; j < col+blockToMove.width; j++) {
 				this.config[i][j] = blockToMove;
 			}
 		}
+		blockToMove.upLCrow = row;
+		blockToMove.upLCcol = col;
 		blocksOnTray.add(blockToMove);
-	}
-	public void putGoalConfig(Block blockToAdd){
-		goalBlocks.add(blockToAdd);
+		return true;
 	}
 	
+	/*public boolean moveOneStep (Block blockToMove, int currRow, int currCol, int dir) {
+		switch (dir){
+		case 1: //up
+			for(int j = currCol; j < currCol + blockToMove.length; j++){
+				if(this.config[blockToMove.upLCrow - 1][j] != null || !this.config[blockToMove.upLCrow - 1][j].equals(blockToMove)){
+					return false;
+				}
+			}
+			
+		case 2: //down
+			for(int j = currCol; j < currCol + blockToMove.length; j++){
+				if(this.config[blockToMove.upLCrow + blockToMove.length][j] != null || !this.config[blockToMove.upLCrow + blockToMove.length][j].equals(blockToMove)){
+					return false;
+				}
+			}
+		case 3: //left
+			for(int j = currRow; j < currRow + blockToMove.width; j++){
+				if(this.config[blockToMove.upLCcol - 1][j] != null || !this.config[blockToMove.upLCcol - 1][j].equals(blockToMove)){
+					return false;
+				}
+			}
+		case 4: //right
+			for(int j = currRow; j < currRow + blockToMove.width; j++){
+				if(this.config[blockToMove.upLCrow + blockToMove.width][j] != null || !this.config[blockToMove.upLCrow + blockToMove.width][j].equals(blockToMove)){
+					return false;
+				}
+			}
+		}
+	}*/
+	
 	//check last moved block?... i feel like there's a better way of doing this
-	public boolean isAtGoal(){
+	public boolean isAtGoal(ArrayList<Block> goalBlocks){
 		for(int i = 0; i<goalBlocks.size(); i++){
 			if(!blocksOnTray.contains(goalBlocks.get(i))){//may have to check this contains method.. not sure if == or equals
 				return false;
@@ -65,7 +97,7 @@ public class Tray {
 		return true;
 	}
 	
-	private boolean isOK() {
+	boolean isOK() {
 		HashMap<Block, Integer> counts = new HashMap<Block, Integer>();
 		for (int m = 0; m < this.lengthOfTray; m++) {
 			for (int n = 0; n < this.widthOfTray; n++) {
@@ -82,8 +114,8 @@ public class Tray {
 		Iterator<Block> i = blocksOnTray.iterator();
 		while(i.hasNext()){
 			Block b = i.next();
-			int numSpace = b.length * b.width;
-			if(numSpace != counts.get(b).intValue()) {
+			int numSpaces = b.length * b.width;
+			if(numSpaces != counts.get(b).intValue()) {
 				return false;
 			}
 		}
@@ -116,5 +148,8 @@ public class Tray {
 			}
 		}
 		return true;
-	}	
+	}
+	
+
 }
+

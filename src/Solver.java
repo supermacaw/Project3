@@ -1,23 +1,40 @@
 package src;
 
 import java.util.Iterator;
+import java.util.ArrayList;
+import java.awt.Point;
 
 public class Solver {
     private Tray tray;
     private Block goalBlock;
     private int goalRow;
     private int goalCol;
-
+    private ArrayList<Block> goalBlocks;
 
     public Solver (int tRow, int tColumn) {
         tray = new Tray(tRow, tColumn);
+        goalBlocks = new ArrayList<Block>();
     }
 
     public Tray getTray() {
         return tray;
     }
     
-   
+    public Map<Point, Block> getEmptyCoords(){
+    	Map<Point, Block> result = new Map<Point, Block>();
+    	for(int i = 0; i < tray.widthOfTray; i++){
+    		for(int j = 0; j < tray.lengthOfTray; j++){
+    			if(tray.config[i][j]==null){
+    				result.add(new Point(i, j));
+    			}
+    		}
+    	}
+    	return result;
+    }
+    
+    public void solve(){
+    	
+    }
 
     public static void main(String[] args) {
         Solver s = null;
@@ -34,7 +51,7 @@ public class Solver {
             }
         }
         if (goalRdr.hasNext()) {
-            int[] param = parseInt(goalRdr.next().split(" "));
+            int[] param = parseInt(goalRdr.next().split(" ")); // should update this for multiple goal blocks
             s.goalBlock = new Block(param[0], param[1]);
             s.goalRow = param[2];
             s.goalCol = param[3];
