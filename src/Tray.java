@@ -42,6 +42,16 @@ public class Tray {
         }
     }
 	
+	/**
+	 * Moves a given block from its given position on the board to a new position if possible.
+	 * 
+	 * @param blockToMove
+	 * 			the block that will be moved
+	 * @param row
+	 * 			the end row the upper left corner of the block would be moved to
+	 * @param col
+	 * 			the end col the upper left corner of the block would be moved to
+	 */
 	public void move (Block blockToMove, int row, int col) {
 		blocksOnTray.remove(blockToMove);
 		for (int m = blockToMove.upLCrow; m < blockToMove.upLCrow+blockToMove.length; m++){
@@ -49,16 +59,13 @@ public class Tray {
 				this.config[m][n] = null;
 			}
 		}
-		blockToMove.upLCrow = row;
-		blockToMove.upLCcol = col;
-		for (int i = row; i < row+blockToMove.length; i++){
-			for(int j = col; i < col+blockToMove.width; j++){
-				if(this.config[i][j] != null){
-					throw new IllegalArgumentException("Conflict in tray reconfiguration, already occupied position at (r,c) = (" + row + "," + col + ")");
-				}
+		for (int i = row; i < row+blockToMove.length; i++) {
+			for(int j = col; j < col+blockToMove.width; j++) {
 				this.config[i][j] = blockToMove;
 			}
 		}
+		blockToMove.upLCrow = row;
+		blockToMove.upLCcol = col;
 		blocksOnTray.add(blockToMove);
 	}
 
@@ -120,7 +127,85 @@ public class Tray {
 	}
 	
 
-	public boolean isAtGoal (){
+    /* This is just a temporary hack for main() */
+    public HashSet<Block> getBlocks() {
+        return blocksOnTray;
+    }
+	
+	 /**
+	  * Essentially a helper method for move, which is first called on by the solver for validity of a move on a block before the block is moved.
+	  * 
+	  * @param blockToMove
+	  * 		the block that is being attempted to move
+	  * @param endRow
+	  * 		the end row the upper left corner of the block would be moved to
+	  * @param endCol
+	  * 		the end col the upper left corner of the block would be moved to
+	  * @return
+	  */
+	public boolean isValidMove (Block blockToMove, int endRow, int endCol) {
+		if (endRow < 0 || endRow+blockToMove.length > this.lengthOfTray || endCol < 0 || endCol+blockToMove.width > this.widthOfTray) { //move would be out of bounds
+			return false;
+		}
+		if (blockToMove.upLCrow != endRow && blockToMove.upLCcol != endCol) { //cannot move diagonally
+			return false;
+		}
+		int dir = 0;
+		if (blockToMove.upLCrow - endRow > 0) {
+			dir = 1; //up
+		}
+		if (blockToMove.upLCrow - endRow < 0) {
+			dir = 2; //down
+		}
+		if (blockToMove.upLCcol - endCol > 0) {
+			dir = 3; //left
+		}
+		if (blockToMove.upLCcol - endCol < 0) {
+			dir = 4; //right
+		}
+		
+		switch (dir){
+		case 1: //up: check to see that the path is clear from current row to higher (lesser in index) row by making sure width of blockToMove is never blocked along the path
+			for(int i = blockToMove.upLCrow-1; i >= endRow; i--){
+				for (int j = blockToMove.upLCcol; j < blockToMove.upLCcol + blockToMove.width; j++){
+					if(this.config[i][j] != null){
+						return false;
+					}
+				}
+			}
+			
+		case 2: //down: check to see that the path is clear from current row to lower (higher in index) row by making sure width of blockToMove is never blocked along the path
+			for(int i = blockToMove.upLCrow+blockToMove.length; i <= endRow; i++){
+				for (int j = blockToMove.upLCcol; j < blockToMove.upLCcol + blockToMove.width; j++){
+					if(this.config[i][j] != null){
+						return false;
+					}
+				}
+			}
+			
+		case 3: //left: check to see that the path is clear from current col to more left (lesser in index) col by making sure length of blockToMove is never blocked along the path
+			for(int i = blockToMove.upLCcol-1; i >= endCol; i--){
+				for (int j = blockToMove.upLCrow; j < blockToMove.upLCrow + blockToMove.length; j++){
+					if(this.config[i][j] != null){
+						return false;
+					}
+				}
+			}
+			
+		case 4: //right: check to see that the path is clear from current col to more right (higher in index) col by making sure length of blockToMove is never blocked along the path
+			for(int i = blockToMove.upLCcol+blockToMove.width; i <= endCol; i++){
+				for (int j = blockToMove.upLCrow; j < blockToMove.upLCrow + blockToMove.length; j++){
+					if(this.config[i][j] != null){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+	
+	//check last moved block?... i feel like there's a better way of doing this
+	public boolean isAtGoal(ArrayList<Block> goalBlocks){
 		for(int i = 0; i<goalBlocks.size(); i++){
 			if(!blocksOnTray.contains(goalBlocks.get(i))){//may have to check this contains method.. not sure if == or equals
 				return false;
@@ -128,14 +213,7 @@ public class Tray {
 		}
 		return true;
 	}
-
-
-    /* This is just a temporary hack for main() */
-    public HashSet<Block> getBlocks() {
-        return blocksOnTray;
-    }
 	
-
 	boolean isOK() {
 		HashMap<Block, Integer> counts = new HashMap<Block, Integer>();
 		for (int m = 0; m < this.lengthOfTray; m++) {
@@ -153,8 +231,8 @@ public class Tray {
 		Iterator<Block> i = blocksOnTray.iterator();
 		while(i.hasNext()){
 			Block b = i.next();
-			int numSpace = b.length * b.width;
-			if(numSpace != counts.get(b).intValue()) {
+			int numSpaces = b.length * b.width;
+			if(numSpaces != counts.get(b).intValue()) {
 				return false;
 			}
 		}
@@ -187,5 +265,6 @@ public class Tray {
 			}
 		}
 		return true;
-	}	
+	}
 }
+
