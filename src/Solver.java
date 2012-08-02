@@ -1,5 +1,6 @@
 package src;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.ArrayList;
 import java.awt.Point;
@@ -7,11 +8,13 @@ import java.util.*;
 
 public class Solver {
     private Tray tray;
-    private ArrayList<Block> goalBlocks;
-
+    private ArrayList<Block> goalBlocks; // need to add some stuff for this in solver
+    HashSet <Tray> seenConfigs;
+    
     public Solver (int tRow, int tColumn) {
         tray = new Tray(tRow, tColumn);
         goalBlocks = new ArrayList<Block>();
+        seenConfigs = new HashSet<Tray>();
     }
 
     public Tray getTray() {
@@ -37,10 +40,10 @@ public class Solver {
     	}
     }
     
-    public HashMap<Point, ArrayList<Block>> emptyCoordsAdjBlocks(){
+    public HashMap<Point, ArrayList<Block>> emptyCoordsAdjBlocks(Tray myTray){
     	HashMap<Point, ArrayList<Block>> emptySpacesAdjBlocks = new HashMap<Point, ArrayList<Block>>();
-    	for(int i = 0; i < tray.widthOfTray; i++){
-    		for(int j = 0; j < tray.lengthOfTray; j++){
+    	for(int i = 0; i < myTray.widthOfTray; i++){
+    		for(int j = 0; j < myTray.lengthOfTray; j++){
     			if(tray.config[i][j]==null){
     				emptySpacesAdjBlocks.put(new Point(i, j), this.emptyCoordsAdjBlocksHelper(i,j));
     			}
@@ -50,20 +53,55 @@ public class Solver {
     }
     
     public void solve(){ //should this go in tray?
-    	HashMap<Point, ArrayList<Block>> adjToEmpty = this.emptyCoordsAdjBlocks();
+    	solveHelper(tray, new ArrayList<String>());   
+    }
+    private static void solveHelper(Tray myTray, ArrayList<String> moves){
+    	if(myTray.isAtGoal()){
+    		for(int i = 0; i < moves.length; i++){
+    			System.out.println(moves.get(i));
+    		}
+    		System.exit(1);
+    		return;
+    	}
+    	seenConfigs.add(myTray);
+    	HashMap<Point, ArrayList<Block>> adjToEmpty = this.emptyCoordsAdjBlocks(myTray);
     	for (Map.Entry<Point, ArrayList<Block>> entry : adjToEmpty.entrySet()) {
     		Point key = entry.getKey();
     		ArrayList<Block> adjBlocks = entry.getValue();
     		for(Block value: adjBlocks){
     			switch(value.direction){
     			case 1: 
-    				(new Tray(tray)).move(value, value.upLCrow - 1, value.upLCcol);
+    				Tray one = new Tray(myTray);
+    				if(one.move(value, value.upLCrow - 1, value.upLCcol)){
+    					moves.add(value.length + " " + value.width + " " value.upLCrow + " " + valu.upLCcol);
+    					if(!seenConfigs.contains(one)){
+    						solveHelper(one, new ArrayList<String>(moves));
+    					}
+    				}
     			case 2:
-    				(new Tray(tray)).move(value, value.upLCrow + 1, value.upLCcol);
+    				Tray two = new Tray(myTray);
+    				if(two.move(value, value.upLCrow + 1, value.upLCcol)){
+    					moves.add(value.length + " " + value.width + " " value.upLCrow + " " + valu.upLCcol);
+    					if(!seenConfigs.contains(two)){
+    						solveHelper(two, new ArrayList<String>(moves));
+    					}
+    				}
     			case 3:
-    				(new Tray(tray)).move(value, value.upLCrow, value.upLCcol + 1);
+    				Tray three = new Tray(myTray);
+    				if(three.move(value, value.upLCrow, value.upLCcol + 1)){
+    					moves.add(value.length + " " + value.width + " " value.upLCrow + " " + valu.upLCcol);
+    					if(!seenConfigs.contains(three)){
+    						solveHelper(three, new ArrayList<String>(moves));
+    					}
+    				}	
     			case 4:
-    				(new Tray(tray)).move(value, value.upLCrow, value.upLCcol - 1);
+    				Tray four = new Tray(myTray);
+    				if(four.move(value, value.upLCrow, value.upLCcol - 1)){
+    					moves.add(value.length + " " + value.width + " " value.upLCrow + " " + valu.upLCcol);
+    					if(!seenConfigs.contains(four)){
+    						solveHelper(four, new ArrayList<String>(moves));
+    					}
+    				}
     			}
     		}
     	}
@@ -90,9 +128,14 @@ public class Solver {
             }
         }
         while (goalRdr.hasNext()) {
-            int[] param = parseInt(goalRdr.next().split(" ")); // should update this for multiple goal blocks
+            int[] param = parseInt(goalRdr.next().split(" "));
             s.addToGoalBlocks(new Block(param[0], param[1]), param[2], param[3]);
         }
+        HashSet<Block> blocks = s.getTray().getBlocks();
+        /*for (Block b : blocks) {
+            System.out.println(b.hashCode());
+        }*/
+        s.solve();
     }
 
     private static void check(String[] args) {

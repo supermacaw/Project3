@@ -10,5 +10,8 @@ org.eclipse.jdt.core.compiler.debug.sourceFile=generate
 org.eclipse.jdt.core.compiler.problem.assertIdentifier=error
 org.eclipse.jdt.core.compiler.problem.enumIdentifier=error
 org.eclipse.jdt.core.compiler.source=1.7
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> refs/heads/new/master
