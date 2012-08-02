@@ -17,9 +17,9 @@ public class Tray {
 	}
 	
 	public Tray(Tray otherTray){
-		this.lengthOfTray = otherTray.length;
-		this.widthOfTray = otherTray.width;
-        this.config = new Block[rows][cols];
+		this.lengthOfTray = otherTray.lengthOfTray;
+		this.widthOfTray = otherTray.widthOfTray;
+        this.config = new Block[otherTray.lengthOfTray][otherTray.widthOfTray];
         Iterator<Block> i = blocksOnTray.iterator();
 		while (i.hasNext()) {
 			Block temp = new Block(i.next());
@@ -61,31 +61,32 @@ public class Tray {
 	 * @param col
 	 * 			the end col the upper left corner of the block would be moved to
 	 */
-	public void move (Block blockToMove, int row, int col) {
-		blocksOnTray.remove(blockToMove);
-		for (int m = blockToMove.upLCrow; m < blockToMove.upLCrow+blockToMove.length; m++){
-			for(int n = blockToMove.upLCcol; n < blockToMove.upLCcol+blockToMove.width; n++){
-				this.config[m][n] = null;
-			}
-		}
-
-		for (int i = row; i < row+blockToMove.length; i++){
-			for(int j = col; j < col+blockToMove.width; j++){
-				if(this.config[i][j] != null){
-					return false;
+	public boolean move (Block blockToMove, int row, int col) {
+		
+			blocksOnTray.remove(blockToMove);
+			for (int m = blockToMove.upLCrow; m < blockToMove.upLCrow+blockToMove.length; m++){
+				for(int n = blockToMove.upLCcol; n < blockToMove.upLCcol+blockToMove.width; n++){
+					this.config[m][n] = null;
 				}
 			}
-		}
-
-		for (int i = row; i < row+blockToMove.length; i++) {
-			for(int j = col; j < col+blockToMove.width; j++) {
-				this.config[i][j] = blockToMove;
+			for (int i = row; i < row+blockToMove.length; i++){
+				for(int j = col; j < col+blockToMove.width; j++){
+					System.out.println(i + " " + j);
+					if(this.config[i][j] != null){
+						return false;
+					}
+				}
 			}
-		}
-		blockToMove.upLCrow = row;
-		blockToMove.upLCcol = col;
-		blocksOnTray.add(blockToMove);
-		return true;
+
+			for (int i = row; i < row+blockToMove.length; i++) {
+				for(int j = col; j < col+blockToMove.width; j++) {
+					this.config[i][j] = blockToMove;
+				}
+			}
+			blockToMove.upLCrow = row;
+			blockToMove.upLCcol = col;
+			blocksOnTray.add(blockToMove);
+			return true;
 	}
 
 
@@ -280,6 +281,11 @@ public class Tray {
 			}
 		}
 		return true;
+	}
+	
+	public boolean equals(Object other){
+		other = (Tray) other;
+		return this.equals(other);
 	}
 }
 

@@ -6,7 +6,7 @@ public class Block {
 	int upLCrow;
 	int upLCcol;
     boolean movable;
-    int direction;
+    boolean[] directions;
 	
     public Block (int length, int width) {
 		if (length < 0 || width < 0) {
@@ -14,6 +14,7 @@ public class Block {
 		}
 		this.length = length;
         this.width = width;
+        directions = new boolean[4];
     }
     
     public Block(Block otherBlock){
@@ -30,13 +31,17 @@ public class Block {
     	return dim ^ coord;
     }
     
+    public boolean equals(Block other){
+    	return (length == other.length && width == other.width && upLCrow == other.upLCrow && upLCcol == other.upLCcol);
+    }
+    
     public boolean equals(Object other){
     	try{
     		other = (Block) other;
+    		return this.equals(other);
     	}catch (Exception e){
     		return false;
     	}
-    	return (length == other.length && width == other.width && upLCrow == other.upLCrow && upLCcol == other.upLCcol);
     }
 
     public void setMovable() {
