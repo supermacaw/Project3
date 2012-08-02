@@ -61,34 +61,22 @@ public class Tray {
 	 * @param col
 	 * 			the end col the upper left corner of the block would be moved to
 	 */
-	public boolean move (Block blockToMove, int row, int col) {
-		
-			blocksOnTray.remove(blockToMove);
-			for (int m = blockToMove.upLCrow; m < blockToMove.upLCrow+blockToMove.length; m++){
-				for(int n = blockToMove.upLCcol; n < blockToMove.upLCcol+blockToMove.width; n++){
-					this.config[m][n] = null;
-				}
+	public void move (Block blockToMove, int row, int col) {
+		blocksOnTray.remove(blockToMove);
+		for (int m = blockToMove.upLCrow; m < blockToMove.upLCrow+blockToMove.length; m++){
+			for(int n = blockToMove.upLCcol; n < blockToMove.upLCcol+blockToMove.width; n++){
+				this.config[m][n] = null;
 			}
-			for (int i = row; i < row+blockToMove.length; i++){
-				for(int j = col; j < col+blockToMove.width; j++){
-					System.out.println(i + " " + j);
-					if(this.config[i][j] != null){
-						return false;
-					}
-				}
+		}
+		for (int i = row; i < row+blockToMove.length; i++) {
+			for(int j = col; j < col+blockToMove.width; j++) {
+				this.config[i][j] = blockToMove;
 			}
-
-			for (int i = row; i < row+blockToMove.length; i++) {
-				for(int j = col; j < col+blockToMove.width; j++) {
-					this.config[i][j] = blockToMove;
-				}
-			}
-			blockToMove.upLCrow = row;
-			blockToMove.upLCcol = col;
-			blocksOnTray.add(blockToMove);
-			return true;
+		}
+		blockToMove.upLCrow = row;
+		blockToMove.upLCcol = col;
+		blocksOnTray.add(blockToMove);
 	}
-
 
     /**
      * Convenience method to check if a block is movable.
