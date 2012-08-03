@@ -20,8 +20,11 @@ public class Solver {
 		return tray;
 	}
 	
-	private int getDir(Block blockToCheck, int row, int col){
-		if(blockToCheck.upLCrow < row){
+	private int getDir(Block blockToCheck, int row, int col, Tray myTray){
+		if(row>myTray.lengthOfTray-1 || row < 0 || col > myTray.widthOfTray-1 || col < 0){
+			throw new IllegalArgumentException();
+		}
+		else if(blockToCheck.upLCrow < row){
 			return 0;
 		}else if(blockToCheck.upLCrow > row){
 			return 1;
@@ -34,6 +37,28 @@ public class Solver {
 		}else{
 			throw new IllegalArgumentException();
 		}
+	}
+	
+	public boolean getDirWorks(){
+		Tray myTray = new Tray(5,5);
+		Block myBlock = new Block(2,2);
+		myTray.place(myBlock, 2, 2);
+		if(getDir(myBlock, 0, 0, myTray)!=1){
+			return false;
+		}if(getDir(myBlock, 3, 0, myTray)!=0){
+			return false;
+		}if(getDir(myBlock, 2, 0, myTray)!=3){
+			return false;
+		}if(getDir(myBlock, 2, 4, myTray)!=2){
+			return false;
+		}if(getDir(myBlock, 2, 2, myTray)!=(-1)){
+			return false;
+		}try{
+			getDir(myBlock, 19, 19, myTray);
+			return false;
+		}catch(Exception e){
+		}
+		return true;
 	}
 
 	private void addAdjBlocks(ArrayList<Block>result, int i, int j, int dir, Tray myTray){ // don't think i need to check for same block, b/c not possible?
@@ -76,7 +101,7 @@ public class Solver {
 			for(int i = 0; i < moves.size(); i++){
 				System.out.println(moves.get(i));
 			}
-			System.exit(1);
+			System.exit(0);
 			return;
 		}// need to have new blocks every time
 		seen.add(myTray);
