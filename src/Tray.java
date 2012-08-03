@@ -1,6 +1,7 @@
 package src;
 
 import java.util.*;
+import java.awt.Point;
 
 public class Tray {
 	
@@ -20,7 +21,7 @@ public class Tray {
 		this.lengthOfTray = otherTray.lengthOfTray;
 		this.widthOfTray = otherTray.widthOfTray;
         this.config = new Block[otherTray.lengthOfTray][otherTray.widthOfTray];
-        Iterator<Block> i = blocksOnTray.iterator();
+        Iterator<Block> i = otherTray.blocksOnTray.iterator();
 		while (i.hasNext()) {
 			Block temp = new Block(i.next());
 			this.place(temp, temp.upLCrow, temp.upLCcol);
@@ -75,7 +76,7 @@ public class Tray {
 		}
 		blockToMove.upLCrow = row;
 		blockToMove.upLCcol = col;
-		blocksOnTray.add(blockToMove);
+		blocksOnTray.add(blockToMove); //check hashCode?
 	}
 
     /**
@@ -118,7 +119,77 @@ public class Tray {
         }
         return up || down || left || right;
     }
-
+    
+    /**
+	  * Essentially a helper method for move, which is first called on by the solver for validity of a move on a block before the block is moved.
+	  * 
+	  * @param blockToMove
+	  * 		the block that is being attempted to move
+	  * @param endRow
+	  * 		the end row the upper left corner of the block would be moved to
+	  * @param endCol
+	  * 		the end col the upper left corner of the block would be moved to
+	  * @return
+	  */
+	public boolean isValidMove (Block blockToMove, int endRow, int endCol) {
+		if ((endRow < 0 || endCol < 0) || (endRow + blockToMove.length > lengthOfTray || endCol + blockToMove.width > widthOfTray)) {
+			return false;
+		}
+		if (blockToMove.upLCrow != endRow && blockToMove.upLCcol != endCol) { //cannot move diagonally
+			return false;
+		}
+		int dir = 0;
+		if (blockToMove.upLCrow - endRow > 0) {
+			dir = 1; //up
+		}
+		if (blockToMove.upLCrow - endRow < 0) {
+			dir = 2; //down
+		}
+		if (blockToMove.upLCcol - endCol > 0) {
+			dir = 3; //left
+		}
+		if (blockToMove.upLCcol - endCol < 0) {
+			dir = 4; //right
+		}
+		switch (dir){
+		case 1: //up: make sure width of blockToMove is never blocked along the path
+			for(int i = blockToMove.upLCrow-1; i >= endRow; i--){
+				for (int j = blockToMove.upLCcol; j < blockToMove.upLCcol + blockToMove.width; j++){
+					if(this.config[i][j] != null){
+						return false;
+					}
+				}
+			}
+			
+		case 2: //down: make sure width of blockToMove is never blocked along the path
+			for(int i = blockToMove.upLCrow+blockToMove.length; i <= endRow + blockToMove.length-1 ; i++){
+				for (int j = blockToMove.upLCcol; j < blockToMove.upLCcol + blockToMove.width; j++){
+					if(this.config[i][j] != null){
+						return false;
+					}
+				}
+			}
+			
+		case 3: //left: make sure width of blockToMove is never blocked along the path
+			for (int i = blockToMove.upLCrow; i < blockToMove.upLCrow + blockToMove.length; i++){
+				for(int j = blockToMove.upLCcol-1; j >= endCol; j--){
+					if(this.config[i][j] != null){
+						return false;
+					}
+				}
+			}
+			
+		case 4: //right: make sure width of blockToMove is never blocked along the path
+			for (int i = blockToMove.upLCrow; i < blockToMove.upLCrow + blockToMove.length; i++){
+				for(int j = blockToMove.upLCcol+blockToMove.width; j <= endCol + blockToMove.width-1; j++){
+					if(this.config[i][j] != null){
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
 
     /**
      * Convenience method to check if a coor is
@@ -135,7 +206,7 @@ public class Tray {
         return blocksOnTray;
     }
 	
-	 
+	
 	
 	//check last moved block?... i feel like there's a better way of doing this
 	public boolean isAtGoal(ArrayList<Block> goalBlocks){
@@ -188,12 +259,17 @@ public class Tray {
 		return hashCode;
 	}
 	
-	public boolean equals(Tray otherTray){
-		//compare length/width of tray? not needed apparently
-		//do we need an equals(obj)? used to override object's and is used in hashsets
+	public boolean equals(Object other){ //can consolidate this
+		Tray otherTray;
+		try{
+			otherTray = (Tray) other;
+		}
+		catch (Exception e){
+			return false;
+		}
 		for(int i = 0; i < this.lengthOfTray; i++){
 			for(int j = 0; j < this.widthOfTray; j++){
-				if(!otherTray.config[i][j].equals(this.config[i][j])){ //.equals or ==?
+				if(otherTray.config[i][j]!=null && this.config[i][j]!=null && !otherTray.config[i][j].equals(this.config[i][j])){ 
 					return false;
 				}
 			}
@@ -201,9 +277,29 @@ public class Tray {
 		return true;
 	}
 	
-	public boolean equals(Object other){ //can consolidate this
-		other = (Tray) other;
-		return this.equals(other);
+	public static void main(String[] args){
+		/*Tray one = new Tray(4,3);
+		Tray two = new Tray(4,3);
+		Block mine = new Block(2,1);
+		one.place(mine, 0, 2);
+		two.place(new Block(2,1), 0, 2);
+		//System.out.println(one.equals(two));
+		one.move(mine, 0, 0);
+		System.out.println(mine.upLCrow + " " + mine.upLCcol);*/
+		/*ArrayList <Point> one = new ArrayList<Point>();
+		Point ho = new Point(3,1);
+		one.add(ho);
+		ArrayList <Point>two = new ArrayList<Point>(one);
+		one.get(0).x = 10000;
+		for(int i = 0; i< one.size(); i++){
+			System.out.println(one.get(i));
+		}
+		for(int j = 0; j < two.size(); j++){
+			System.out.println(two.get(j));
+		}*/
+		
 	}
+	
+	
 }
 

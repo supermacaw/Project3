@@ -1,12 +1,13 @@
 package src;
 
-public class Block {
+public class Block{
 	int length;
 	int width;
 	int upLCrow;
 	int upLCcol;
     boolean movable;
     boolean[] directions;
+    //int priority;
 	
     public Block (int length, int width) {
 		if (length < 0 || width < 0) {
@@ -15,6 +16,10 @@ public class Block {
 		this.length = length;
         this.width = width;
         directions = new boolean[4];
+        for(boolean i: directions){ // just to make sure it's false
+        	i = false;
+        }
+        //priority = 1000000; //set to low or high first?
     }
     
     public Block(Block otherBlock){
@@ -22,6 +27,8 @@ public class Block {
     	this.width = otherBlock.width;
     	this.upLCrow = otherBlock.upLCrow;
     	this.upLCcol = otherBlock.upLCcol;
+    	directions = new boolean[4];
+    	//priority = 1000000;
     	//others?
     }
     
@@ -30,18 +37,15 @@ public class Block {
     	int coord = upLCrow + upLCcol*10;
     	return dim ^ coord;
     }
-    
-    public boolean equals(Block other){
-    	return (length == other.length && width == other.width && upLCrow == other.upLCrow && upLCcol == other.upLCcol);
-    }
-    
+      
     public boolean equals(Object other){
+    	Block otherB = null;
     	try{
-    		other = (Block) other;
-    		return this.equals(other);
+    		otherB = (Block) other;
     	}catch (Exception e){
     		return false;
     	}
+    	return (length == otherB.length && width == otherB.width && upLCrow == otherB.upLCrow && upLCcol == otherB.upLCcol);
     }
 
     public void setMovable() {
@@ -51,4 +55,18 @@ public class Block {
     public void setUnmovable() {
         movable = false;
     }
+    
+    public String toString(){
+    	return "Block l: " + length + " w: " + width + " coords: " + upLCrow + ", " + upLCcol + " " + directions[0] + directions[1] + directions[2] + directions[3];
+    }
+    
+   /* public int compareTo(Object other){//should be object, which one should subtract?
+    	Block otherB = null;
+    	try{
+    		otherB = (Block) other;
+    	}catch (Exception e){
+    		System.out.println(e);
+    	}
+    	return otherB.priority - this.priority;
+    }*/
 }
