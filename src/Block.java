@@ -45,7 +45,10 @@ public class Block{
     	}catch (Exception e){
     		return false;
     	}
-    	return (length == otherB.length && width == otherB.width && upLCrow == otherB.upLCrow && upLCcol == otherB.upLCcol);
+    	return (length == otherB.length 
+    			&& width == otherB.width
+    			&& upLCrow == otherB.upLCrow
+    			&& upLCcol == otherB.upLCcol);
     }
 
     public void setMovable() {
@@ -57,16 +60,9 @@ public class Block{
     }
     
     public String toString(){
-    	return "Block l: " + length + " w: " + width + " coords: " + upLCrow + ", " + upLCcol + " " + directions[0] + directions[1] + directions[2] + directions[3];
+    	return "Block l: " + length 
+    			+ " w: " + width 
+    			+ " coords: " + upLCrow + ", " + upLCcol + " "
+    			+ directions[0] + directions[1] + directions[2] + directions[3];
     }
-    
-   /* public int compareTo(Object other){//should be object, which one should subtract?
-    	Block otherB = null;
-    	try{
-    		otherB = (Block) other;
-    	}catch (Exception e){
-    		System.out.println(e);
-    	}
-    	return otherB.priority - this.priority;
-    }*/
 }

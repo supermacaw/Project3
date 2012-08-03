@@ -62,18 +62,10 @@ public class Tray {
 	 * @param col
 	 * 			the end col the upper left corner of the block would be moved to
 	 */
-	public void move (Block blockToMove, int row, int col) {
+	public void move (Block blockToMove, int row, int col) { // can make this more efficient
+		this.remove(blockToMove);
 		blocksOnTray.remove(blockToMove);
-		for (int m = blockToMove.upLCrow; m < blockToMove.upLCrow+blockToMove.length; m++){
-			for(int n = blockToMove.upLCcol; n < blockToMove.upLCcol+blockToMove.width; n++){
-				this.config[m][n] = null;
-			}
-		}
-		for (int i = row; i < row+blockToMove.length; i++) {
-			for(int j = col; j < col+blockToMove.width; j++) {
-				this.config[i][j] = blockToMove;
-			}
-		}
+		this.place(blockToMove, row, col);
 		blockToMove.upLCrow = row;
 		blockToMove.upLCcol = col;
 		blocksOnTray.add(blockToMove); //check hashCode?
@@ -196,9 +188,9 @@ public class Tray {
      * in tray's bounds.
      */
     private boolean inBounds (int row, int col) {
-        return row > 0 && col > 0 
-                && row < lengthOfTray - 1
-                && col < widthOfTray - 1;
+        return row >= 0 && col >= 0 
+                && row < lengthOfTray
+                && col < widthOfTray;
     }
 
     /* This is just a temporary hack for main() */
@@ -269,7 +261,9 @@ public class Tray {
 		}
 		for(int i = 0; i < this.lengthOfTray; i++){
 			for(int j = 0; j < this.widthOfTray; j++){
-				if(otherTray.config[i][j]!=null && this.config[i][j]!=null && !otherTray.config[i][j].equals(this.config[i][j])){ 
+				if(otherTray.config[i][j]!=null && this.config[i][j]!=null){
+					return otherTray.config[i][j].equals(this.config[i][j]);
+				}else if(otherTray.config[i][j] == null ^ this.config[i][j]==null){
 					return false;
 				}
 			}
