@@ -19,21 +19,30 @@ public class Solver {
 	public Tray getTray() {
 		return tray;
 	}
+	
+	private int getDir(Block blockToCheck, int row, int col){
+		if(blockToCheck.upLCrow < row){
+			return 0;
+		}else if(blockToCheck.upLCrow > row){
+			return 1;
+		}else if(blockToCheck.upLCcol < col){
+			return 2;
+		}else if(blockToCheck.upLCcol > col){
+			return 3;
+		}else if(blockToCheck.upLCrow == row && blockToCheck.upLCcol == col){
+			return -1;
+		}else{
+			throw new IllegalArgumentException();
+		}
+	}
 
 	private void addAdjBlocks(ArrayList<Block>result, int i, int j, int dir, Tray myTray){ // don't think i need to check for same block, b/c not possible?
-		//System.out.println("Before crashing, i and j were " + i + " " + j);
 		if(i>myTray.lengthOfTray-1 || i < 0 || j > myTray.widthOfTray-1 || j < 0){
-			//System.out.println("We get here when i and j are " + i + " " + j);
 			return;
 		}
 		else if(myTray.config[i][j]!=null){//contains is ok b/c coords same
 			myTray.config[i][j].directions[dir] = true;
 			if(!result.contains(myTray.config[i][j])){
-				/*for(Block b : goalBlocks){
-					if(myTray.config[i][j].length == b.length && myTray.config[i][j].width == b.width){
-						myTray.config[i][j].priority = 1;
-					}
-				}*/
 				result.add(myTray.config[i][j]);
 			}
 		}
@@ -76,9 +85,9 @@ public class Solver {
 		for(Block bix: adjToEmpty){
 			System.out.println(bix);
 		}
-		for(Block value: adjToEmpty){
+		for(Block value: adjToEmpty){// this is new
 			//System.out.println("block " + value.upLCrow + " "+ value.upLCcol + " " + value.length + " " + value.width + " " + value.priority);
-			if(value.directions[0]){  //OMG VALUE IS THE PROBLEM!!!!
+			if(value.directions[0]){  
 				Tray one = new Tray(myTray);
 				Block copy1 = one.config[value.upLCrow][value.upLCcol];
 				if(one.isValidMove(copy1, copy1.upLCrow + 1, copy1.upLCcol)){

@@ -198,8 +198,6 @@ public class Tray {
         return blocksOnTray;
     }
 	
-	
-	
 	//check last moved block?... i feel like there's a better way of doing this
 	public boolean isAtGoal(ArrayList<Block> goalBlocks){
 		for(int i = 0; i<goalBlocks.size(); i++){
@@ -224,20 +222,12 @@ public class Tray {
 				}
 			}
 		}
-		Iterator<Block> i = blocksOnTray.iterator();
-		while(i.hasNext()){
-			Block b = i.next();
-			int numSpaces = b.length * b.width;
-			if(numSpaces != counts.get(b).intValue()) {
-				return false;
-			}
-		}
-		/*for(Block b : blocksOnTray){
+		for(Block b : blocksOnTray){
 			int numSpaces = b.length * b.width;
 			if(numSpaces != counts.get(b).intValue()){
 				return false;
 			}
-		}*/
+		}
 		return true;
 	}
 	
@@ -272,26 +262,6 @@ public class Tray {
 	}
 	
 	public static void main(String[] args){
-		/*Tray one = new Tray(4,3);
-		Tray two = new Tray(4,3);
-		Block mine = new Block(2,1);
-		one.place(mine, 0, 2);
-		two.place(new Block(2,1), 0, 2);
-		//System.out.println(one.equals(two));
-		one.move(mine, 0, 0);
-		System.out.println(mine.upLCrow + " " + mine.upLCcol);*/
-		/*ArrayList <Point> one = new ArrayList<Point>();
-		Point ho = new Point(3,1);
-		one.add(ho);
-		ArrayList <Point>two = new ArrayList<Point>(one);
-		one.get(0).x = 10000;
-		for(int i = 0; i< one.size(); i++){
-			System.out.println(one.get(i));
-		}
-		for(int j = 0; j < two.size(); j++){
-			System.out.println(two.get(j));
-		}*/
-		
 	}
 	
 	
