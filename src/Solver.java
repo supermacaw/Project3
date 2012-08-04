@@ -2,13 +2,14 @@ package src;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 
 //check hashcodes later and equals methods
 
 public class Solver {
 	private Tray tray;
 	private ArrayList<Block> goalBlocks; // need to add some stuff for this in solver
-	HashSet <Tray> seen;
+	private HashSet<Tray> seen;
 
 	public Solver (int tRow, int tColumn) {
 		tray = new Tray(tRow, tColumn);
@@ -20,34 +21,32 @@ public class Solver {
 		return tray;
 	}
 
-	private void addAdjBlocks(ArrayList<Block>result, int i, int j, int dir, Tray myTray){ // don't think i need to check for same block, b/c not possible?
-		//System.out.println("Before crashing, i and j were " + i + " " + j);
-		if(i>myTray.lengthOfTray-1 || i < 0 || j > myTray.widthOfTray-1 || j < 0){
-			//System.out.println("We get here when i and j are " + i + " " + j);
+	private void addAdjBlocks(LinkedList<Block>result, int i, int j, int dir, Tray myTray){
+		if(!myTray.inBounds(i,  j)){
 			return;
-		}
-		else if(myTray.config[i][j]!=null){//contains is ok b/c coords same
-			myTray.config[i][j].directions[dir] = true;
-			if(!result.contains(myTray.config[i][j])){
-				/*for(Block b : goalBlocks){
-					if(myTray.config[i][j].length == b.length && myTray.config[i][j].width == b.width){
-						myTray.config[i][j].priority = 1;
-					}
-				}*/
-				result.add(myTray.config[i][j]);
+		} 
+		Block toAdd = myTray.config[i][j];
+		if(toAdd != null){
+			toAdd.directions[dir] = true;
+			if(!result.contains(toAdd)){
+                if (toAdd.isPriority()) {
+                    result.addFirst(myTray.config[i][j]);
+                } else {
+                    result.add(myTray.config[i][j]);
+                }
 			}
 		}
 	}
 	
-	private void emptyCoordsAdjBlocksHelper(int row, int col, Tray myTray, ArrayList<Block> result){
-		addAdjBlocks(result, row-1, col, 0, myTray);//up, down, left, right
-		addAdjBlocks(result, row + 1, col, 1, myTray);//GOTTA CHECK IF THEY"RE OUTTA BOUNDSSSS, maybe check this funky coordinate business
-		addAdjBlocks(result, row, col-1, 2, myTray);    	//coord system weird, top down
+	private void emptyCoordsAdjBlocksHelper(int row, int col, Tray myTray, LinkedList<Block> result){
+		addAdjBlocks(result, row-1, col, 0, myTray);
+		addAdjBlocks(result, row + 1, col, 1, myTray);
+		addAdjBlocks(result, row, col-1, 2, myTray);
 		addAdjBlocks(result, row, col+1, 3, myTray);
 	}
 
-	public ArrayList <Block> emptyCoordsAdjBlocks(Tray myTray){
-		ArrayList<Block> result = new ArrayList<Block>();//repeated block adds
+	public LinkedList <Block> emptyCoordsAdjBlocks(Tray myTray){
+		LinkedList<Block> result = new LinkedList<Block>();//repeated block adds
 		for(int row = 0; row < myTray.lengthOfTray; row++){
 			for(int col = 0; col < myTray.widthOfTray; col++){
 				if(myTray.config[row][col]==null){
@@ -65,20 +64,16 @@ public class Solver {
 		}*/
 		if(myTray.isAtGoal(goalBlocks)){
 			for(int i = 0; i < moves.size(); i++){
-				System.out.println(moves.get(i));
+				System.out.println(i + " " + moves.get(i));
 			}
 			System.exit(1);
 			return;
 		}// need to have new blocks every time
 		seen.add(myTray);
-		ArrayList<Block> adjToEmpty = this.emptyCoordsAdjBlocks(myTray);
-		System.out.println();
-		for(Block bix: adjToEmpty){
-			System.out.println(bix);
-		}
+		LinkedList<Block> adjToEmpty = this.emptyCoordsAdjBlocks(myTray);
 		for(Block value: adjToEmpty){
 			//System.out.println("block " + value.upLCrow + " "+ value.upLCcol + " " + value.length + " " + value.width + " " + value.priority);
-			if(value.directions[0]){  //OMG VALUE IS THE PROBLEM!!!!
+			if(value.directions[0]){
 				Tray one = new Tray(myTray);
 				Block copy1 = one.config[value.upLCrow][value.upLCcol];
 				if(one.isValidMove(copy1, copy1.upLCrow + 1, copy1.upLCcol)){
@@ -129,11 +124,11 @@ public class Solver {
 		}
 	}
 	
-	public void solve(){ //should this go in tray?
+	public void solve(){
 		this.solveHelper(tray, new ArrayList<String>());   
 	}
 
-	public void addToGoalBlocks(Block blockToAdd, int row, int col){//do we need this?
+	public void addToGoalBlocks(Block blockToAdd, int row, int col){
 		blockToAdd.upLCrow = row;
 		blockToAdd.upLCcol = col;
 		this.goalBlocks.add(blockToAdd);
@@ -144,22 +139,28 @@ public class Solver {
 		check(args);
 		FileItr configRdr = new FileItr(args[args.length - 2]);
 		FileItr goalRdr = new FileItr(args[args.length - 1]);
-		while (configRdr.hasNext()) {
-			int[] param = parseInt(configRdr.next().split(" "));
-			if (configRdr.lineNumber() == 1) {
-				s = new Solver(param[0], param[1]);
-			} else {
-				try{//just to make sure that random ass trays don't mess it up, maybe modify this
-					Block newBlock = new Block(param[0], param[1]);
-					s.getTray().place(newBlock, param[2], param[3]);
-				}catch(Exception e){
-					System.out.println("Bad tray / bad block");
-				}
-			}
-		}
+        if (configRdr.hasNext()) {
+            int[] param = parseInt(configRdr.next().split(" "));
+            s = new Solver(param[0], param[1]);
+        }
 		while (goalRdr.hasNext()) {
 			int[] param = parseInt(goalRdr.next().split(" "));
 			s.addToGoalBlocks(new Block(param[0], param[1]), param[2], param[3]);
+		}
+		while (configRdr.hasNext()) {
+			int[] param = parseInt(configRdr.next().split(" "));
+            Block newBlock = new Block(param[0], param[1]);
+            for (Block gBlock : s.goalBlocks) {
+            	if (newBlock.length == gBlock.length
+            		&& newBlock.width == gBlock.width) {
+                	newBlock.setPriority();
+            	}
+            }
+            try{//just to make sure that random ass trays don't mess it up, maybe modify this
+                s.getTray().place(newBlock, param[2], param[3]);
+            }catch(IllegalArgumentException e){
+                System.out.println("Bad tray or bad block (or other error)");
+            }
 		}
 		s.solve();
 	}

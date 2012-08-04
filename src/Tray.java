@@ -187,7 +187,7 @@ public class Tray {
      * Convenience method to check if a coor is
      * in tray's bounds.
      */
-    private boolean inBounds (int row, int col) {
+    public boolean inBounds (int row, int col) {
         return row >= 0 && col >= 0 
                 && row < lengthOfTray
                 && col < widthOfTray;
@@ -202,8 +202,8 @@ public class Tray {
 	
 	//check last moved block?... i feel like there's a better way of doing this
 	public boolean isAtGoal(ArrayList<Block> goalBlocks){
-		for(int i = 0; i<goalBlocks.size(); i++){
-			if(!blocksOnTray.contains(goalBlocks.get(i))){//may have to check this contains method.. not sure if == or equals
+		for(Block b : goalBlocks){
+			if(!blocksOnTray.contains(b)){//may have to check this contains method.. not sure if == or equals
 				return false;
 			}
 		}

@@ -7,7 +7,7 @@ public class Block{
 	int upLCcol;
     boolean movable;
     boolean[] directions;
-    //int priority;
+    boolean priority;
 	
     public Block (int length, int width) {
 		if (length < 0 || width < 0) {
@@ -15,11 +15,11 @@ public class Block{
 		}
 		this.length = length;
         this.width = width;
+        this.priority = false;
         directions = new boolean[4];
         for(boolean i: directions){ // just to make sure it's false
         	i = false;
         }
-        //priority = 1000000; //set to low or high first?
     }
     
     public Block(Block otherBlock){
@@ -27,9 +27,13 @@ public class Block{
     	this.width = otherBlock.width;
     	this.upLCrow = otherBlock.upLCrow;
     	this.upLCcol = otherBlock.upLCcol;
-    	directions = new boolean[4];
-    	//priority = 1000000;
+        this.priority = otherBlock.isPriority();
+    	this.directions = new boolean[4];
     	//others?
+    }
+
+    public void setPriority() {
+        priority = true;
     }
     
     public int hashCode() {
@@ -49,6 +53,10 @@ public class Block{
     			&& width == otherB.width
     			&& upLCrow == otherB.upLCrow
     			&& upLCcol == otherB.upLCcol);
+    }
+
+    public boolean isPriority() {
+        return priority;
     }
 
     public void setMovable() {
