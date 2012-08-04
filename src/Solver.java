@@ -99,7 +99,7 @@ public class Solver {
 		}*/
 		if(myTray.isAtGoal(goalBlocks)){
 			for(int i = 0; i < moves.size(); i++){
-				System.out.println(moves.get(i));
+				System.out.println(i + " " + moves.get(i));
 			}
 			System.exit(0);
 			return;
@@ -186,7 +186,7 @@ public class Solver {
 				try{//just to make sure that random ass trays don't mess it up, maybe modify this
 					Block newBlock = new Block(param[0], param[1]);
 					s.getTray().place(newBlock, param[2], param[3]);
-				}catch(Exception e){
+				}catch(IllegalArgumentException e){
 					System.out.println("Bad tray / bad block");
 				}
 			}
