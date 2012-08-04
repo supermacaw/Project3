@@ -224,20 +224,12 @@ public class Tray {
 				}
 			}
 		}
-		Iterator<Block> i = blocksOnTray.iterator();
-		while(i.hasNext()){
-			Block b = i.next();
-			int numSpaces = b.length * b.width;
-			if(numSpaces != counts.get(b).intValue()) {
-				return false;
-			}
-		}
-		/*for(Block b : blocksOnTray){
+		for(Block b : blocksOnTray){
 			int numSpaces = b.length * b.width;
 			if(numSpaces != counts.get(b).intValue()){
 				return false;
 			}
-		}*/
+		}
 		return true;
 	}
 	
